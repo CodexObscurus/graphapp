@@ -1,4 +1,4 @@
-<?php include "funnel.php"; ?>
+<?php include "funnel.php"; include "funnel2.php"; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,10 +13,10 @@
     <script class="include" type="text/javascript" src="jquery.min.js"></script>
 </head>
 <body><div class="pageBG"></div>
-        
+
     <div class="container">
         <div class="row">
-            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <nav class="navbar" role="navigation">
                 <div class="container">
                 <div class="navbar-header">
                   <a class="navbar-brand" href="#"><span class='white'>Graphing</span><span class='red'>App</span></a>
@@ -25,16 +25,16 @@
             </nav>
         </div>
     </div>
-    
+
     <div class="container datapanel">
       <div class="jumbotron rounded glow">
         <div class="row">
             <h4>Choose data source/channel...</h4>
             <a href='#' class="btn btn-success tranbtn startbtn"><span class="glyphicon glyphicon-play"></span>&nbsp;&nbsp;Start</a>&nbsp;&nbsp;<a href='#' class="btn btn-danger tranbtn stopbtn"><span class="glyphicon glyphicon-stop"></span>&nbsp;&nbsp;Stop</a>
-                
+
             <form name="searchForm" id="searchForm" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>"><input type="file" name="tag" id="uploadbox" placeholder="Upload data" disabled /><button type="submit" class="btn btn-default disabled"><i class="glyphicon glyphicon-open"></i></button></form>
         </div><!-- /.row -->
-          
+
         <div class="row" id="infopanel">
             <div class="infobox">
                 <h3><span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;Technologies used:</h3>
@@ -44,10 +44,10 @@
             </div>
         </div>
       </div><!-- /.jumbotron -->
-        
+
         <div class="chartcontainer glow">
             <div class="row">
-                <div id="info1"></div>
+                <div id="info1">Select a point for details</div>
                 <div id="chart1"></div>
                 <button value="reset" type="button" onclick="plot1.resetZoom();" class="btn btn-primary rstbtn">Reset Zoom</button>
            </div>
@@ -59,16 +59,17 @@
 	  $(document).ready(function(){
 		$("#infopanel").hide();
 		$(".infobtn,.tranbtn").click(function(){ $("#infopanel").toggle(500); });
-		
+
 		  // Enable plugins like cursor and highlighter by default.
 		  $.jqplot.config.enablePlugins = true;
 		  // For these examples, don't show the to image button.
 		  $.jqplot._noToImageButton = true;
 
 		goog = <?php echo $ret; ?>;
+		goog2 = <?php echo $ret2; ?>;
 
 		opts = {
-		  title: 'Data stream paused',
+		  title: '',
 		  grid: { drawBorder: false, shadow: true, background: 'rgba(0,0,0,0)' },
 		  highlighter: {
             sizeAdjust: 12,shadowAlpha: 0.1, shadowDepth: 2, fillToZero: true,
@@ -78,7 +79,7 @@
 				markerOptions: { style: 'filledCircle', size: 8 },
 				rendererOptions: { smooth: true }
 			},{
-				color: 'rgba(44, 190, 160, 1)', showMarker: true,
+				color: 'rgba(92,184,92,1)', showMarker: true,
 				rendererOptions: { smooth: true, },
 				markerOptions: { style: 'filledSquare', size: 8 },
 			}],
@@ -98,12 +99,12 @@
 			followMouse: false }
 		};
 
-		plot1 = $.jqplot('chart1', [goog], opts);
+		plot1 = $.jqplot('chart1', [goog,goog2], opts);
 		    
         $('#chart1').bind('jqplotDataClick', 
             function (ev, seriesIndex, pointIndex, data) {
 			data2 = data[1];
-                $('#info1').html('series: '+seriesIndex+', point: '+pointIndex+', data: &pound;'+data2+ ', pageX: '+ev.pageX+', pageY: '+ev.pageY);
+                $('#info1').slideUp(250,function(){$(this).html('series: '+seriesIndex+', point: '+pointIndex+', data: &pound;'+data2+ ', pageX: '+ev.pageX+', pageY: '+ev.pageY);}).slideDown(250);
             }
         );
 		});
